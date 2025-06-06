@@ -1,5 +1,8 @@
 // Copyright 2025 genius-invokation
 //
+// Based on code from open_spiel:
+// Copyright 2022 DeepMind Technologies Limited
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -23,7 +26,7 @@ namespace gi_tcg {
 
 enum class Phase { kDeal, kAuction, kPlay, kGameOver };
 
-inline constexpr int kNumPlayers = 2;
+inline constexpr int kNumPlayers = 3;
 inline constexpr int kNumCards = 54;
 
 inline constexpr int kNumBids = 3;

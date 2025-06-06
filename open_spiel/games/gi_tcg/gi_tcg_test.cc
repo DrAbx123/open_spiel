@@ -1,3 +1,6 @@
+// Copyright 2025 genius-invokation
+//
+// Based on code from open_spiel:
 // Copyright 2022 DeepMind Technologies Limited
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

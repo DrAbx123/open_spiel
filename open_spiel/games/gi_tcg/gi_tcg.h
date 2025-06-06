@@ -1,3 +1,6 @@
+// Copyright 2025 genius-invokation
+//
+// Based on code from open_spiel:
 // Copyright 2022 DeepMind Technologies Limited
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef OPEN_SPIEL_GAMES_gi_tcg_H_
-#define OPEN_SPIEL_GAMES_gi_tcg_H_
+#ifndef OPEN_SPIEL_GAMES_GI_TCG_H_
+#define OPEN_SPIEL_GAMES_GI_TCG_H_
 
 // The game of dou dizhu (the three-player version).
 // For a general description of the rules, see
