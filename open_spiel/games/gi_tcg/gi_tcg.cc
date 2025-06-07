@@ -29,16 +29,21 @@ namespace {
 const GameType kGameType{/*short_name=*/"gi_tcg",
                          /*long_name=*/"Genius Invokation",
                          GameType::Dynamics::kSequential,
-                         GameType::ChanceMode::kExplicitStochastic,
+                         GameType::ChanceMode::kSampledStochastic,
                          GameType::Information::kImperfectInformation,
                          GameType::Utility::kZeroSum,
                          GameType::RewardModel::kTerminal,
                          /*max_num_players=*/kNumPlayers,
                          /*min_num_players=*/kNumPlayers,
-                         /*provides_information_state_string=*/false, //待定
+                         /*provides_information_state_string=*/true,
                          /*provides_information_state_tensor=*/false,
                          /*provides_observation_string=*/true,
                          /*provides_observation_tensor=*/true};
+                          /*parameter_specification=*/
+                        //  {{"filename", GameParameter(std::string(""))}}, //未必
+                        //  /*default_loadable=*/false,
+                        //  /*provides_factored_observation_string=*/false,
+                        //  /*is_concrete=*/false};};
 
 std::shared_ptr<const Game> Factory(const GameParameters& params) {
   return std::shared_ptr<const Game>(new GITCGGame(params));

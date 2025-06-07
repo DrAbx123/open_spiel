@@ -166,22 +166,52 @@ class GITCGState : public State {
 class GITCGGame : public Game {
  public:
   explicit GITCGGame(const GameParameters& params);
-  int NumDistinctActions() const override { return kRocketActionBase + 1; }
+  int NumDistinctActions() const override { return 0; } // 行动空间很大，应该不能写死？
   int MaxChanceOutcomes() const override {
-    return kDealingActionBase + kNumCards;
+    return INFINITY; //很大
   }
   std::unique_ptr<State> NewInitialState() const override {
     return absl::make_unique<GITCGState>(shared_from_this());
+  }
+  std::unique_ptr<State> NewInitialState(const std::string& str) const override {
+    // 假装对str处理了
+    return absl::make_unique<GITCGState>(shared_from_this());
+    SpielFatalError("NewInitialState from string is not implemented.");
   }
   int NumPlayers() const override { return kNumPlayers; }
   double MinUtility() const override { return kMinUtility; }
   double MaxUtility() const override { return kMaxUtility; }
   absl::optional<double> UtilitySum() const override { return 0; }
-  std::vector<int> ObservationTensorShape() const override {
-    return {kObservationTensorSize};
+
+
+  std::vector<int> InformationStateTensorShape() const override{
+    SpielFatalError("InformationStateTensorShape unimplemented."); // 不实现很难训练
   }
+  TensorLayout InformationStateTensorLayout() const override{
+    return TensorLayout::kCHW;  // 不实现很难训练
+  }
+
+  std::vector<int> ObservationTensorShape() const override {
+    return {kObservationTensorSize}; // 要改
+  }
+
+  TensorLayout ObservationTensorLayout() const override{
+    return TensorLayout::kCHW; // 要改
+  }
+
+  std::vector<int> PolicyTensorShape() const override{
+    return {1}; //{NumDistinctActions()}; 未必
+  }
+  std::unique_ptr<State> DeserializeState(const std::string& str) const override{
+    return absl::make_unique<GITCGState>(shared_from_this()); //明显不是，这里要从字符串导入游戏log
+  }
+
   int MaxGameLength() const override {
-    return kMaxAuctionLength + kNumCards * kNumPlayers;
+    return 999; //15回合最长多少，可能要算，不知道有没有无限情况
+  }
+
+  int MaxChanceNodesInHistory() const override {
+    return 9999; //再说
   }
 };
 }  // namespace gi_tcg

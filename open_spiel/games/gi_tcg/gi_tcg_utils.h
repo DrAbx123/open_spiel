@@ -26,7 +26,7 @@ namespace gi_tcg {
 
 enum class Phase { kDeal, kAuction, kPlay, kGameOver };
 
-inline constexpr int kNumPlayers = 3;
+inline constexpr int kNumPlayers = 2;
 inline constexpr int kNumCards = 54;
 
 inline constexpr int kNumBids = 3;
@@ -36,10 +36,9 @@ inline constexpr int kNumCardsPerSuit = 13;
 // & 2 passes
 inline constexpr int kMaxAuctionLength = 9;
 
-// the maximum/minimum utility is achieved if the players play all 13 bombs
-// alternatively and dizhu bid maximum bids
-inline constexpr int kMaxUtility = kNumBids * 16384;
-inline constexpr int kMinUtility = -kNumBids * 8192;
+// 零和博弈，只有胜平负
+inline constexpr int kMaxUtility = 1; // 赢的情况
+inline constexpr int kMinUtility = -1; // 输的情况
 
 // 13 normal cards + 2 jokers
 inline constexpr int kNumRanks = kNumCardsPerSuit + 2;
@@ -52,9 +51,7 @@ inline constexpr int kNumSuits = 4;
 // Plus the number of cards of each rank that had been played by all players
 // Plus the start player
 // Plus the face up card
-inline constexpr int kObservationTensorSize =
-    2 * ((kNumRanks - 2) * (kNumSuits + 1) + 2 * 2) + kNumPlayers +
-    kNumPlayers + kNumRanks;
+inline constexpr int kObservationTensorSize = 5; // 100%要改，再算吧
 
 inline constexpr int kDealingActionBase = kNumCards - kNumCardsLeftOver;
 
