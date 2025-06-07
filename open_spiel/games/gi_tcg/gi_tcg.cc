@@ -55,6 +55,206 @@ RegisterSingleTensorObserver single_tensor(kGameType.short_name);
 
 }  // namespace
 
+
+// class GITCGObserver : public Observer {
+//  public:
+//   explicit GITCGObserver(IIGObservationType iig_obs_type)
+//       : Observer(/*has_string=*/ObserverHasString(iig_obs_type),
+//                  /*has_tensor=*/ObserverHasTensor(iig_obs_type)),
+//         iig_obs_type_(iig_obs_type) {}
+
+
+//   void WriteTensor(const State& observed_state, int player,
+//                    Allocator* allocator) const override {
+//     auto& state = open_spiel::down_cast<const GITCGState&>(observed_state);
+//     SPIEL_CHECK_GE(player, 0);
+//     SPIEL_CHECK_LT(player, state.num_players_);
+
+//     if (iig_obs_type_.perfect_recall) {
+//       SpielFatalError(
+//           "GITCGObserver: tensor with perfect recall not implemented.");
+//     }
+
+//     // Observing player.
+//     WriteObservingPlayer(state, player, allocator);
+
+//     // Private hand(s).
+//     if (iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer) {
+//       WriteSinglePlayerHand(state, player, allocator);
+//     } else if (iig_obs_type_.private_info == PrivateInfoType::kAllPlayers) {
+//       WriteAllPlayerHands(state, allocator);
+//     }
+
+//     // Public information.
+//     if (iig_obs_type_.public_info) {
+//       WriteCurrentPlayer(state, allocator);
+//       WriteKnockCard(state, allocator);
+//       WriteUpcard(state, allocator);
+//       WriteDiscardPile(state, allocator);
+//       WriteStockSize(state, allocator);
+//       WriteLayedMelds(state, allocator);
+//     }
+//   }
+
+//   std::string StringFrom(const State& observed_state,
+//                          int player) const override {
+//     auto& state = open_spiel::down_cast<const GITCGState&>(observed_state);
+//     SPIEL_CHECK_GE(player, 0);
+//     SPIEL_CHECK_LT(player, state.num_players_);
+
+//     if (iig_obs_type_.perfect_recall) {
+//       if (iig_obs_type_.public_info &&
+//           iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer) {
+//         return state.aohs_[player].ToString();
+//       } else {
+//         SpielFatalError(
+//             "GITCGObserver: string with perfect recall is implemented only"
+//             " for the (default) info state observation type.");
+//       }
+//     }
+
+//     std::string rv;
+//     absl::StrAppend(&rv, "\nKnock card: ", state.knock_card_);
+//     absl::StrAppend(&rv, "\nPrev upcard: ",
+//                     state.utils_.CardString(state.prev_upcard_));
+//     absl::StrAppend(&rv, "\nRepeated move: ", state.repeated_move_);
+//     absl::StrAppend(&rv, "\nCurrent player: ", state.cur_player_);
+//     absl::StrAppend(&rv, "\nPhase: ",
+//                     GITCGState::kPhaseString[static_cast<int>(state.phase_)],
+//                     "\n");
+//     if (iig_obs_type_.private_info == PrivateInfoType::kAllPlayers ||
+//         (iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer &&
+//         player == 0)) {
+//       absl::StrAppend(&rv, "\nPlayer0: Deadwood=", state.deadwood_[0]);
+//     } else {
+//       absl::StrAppend(&rv, "\nPlayer0:");
+//     }
+//     if (state.knocked_[1] && !state.layoffs_.empty()) {
+//       absl::StrAppend(&rv, "\nLayoffs: ");
+//       for (int card : state.layoffs_) {
+//         absl::StrAppend(&rv, state.utils_.CardString(card));
+//       }
+//     }
+//     if (!state.layed_melds_[0].empty()) {
+//       absl::StrAppend(&rv, "\nLayed melds:");
+//       for (int meld_id : state.layed_melds_[0]) {
+//         absl::StrAppend(&rv, " ");
+//         std::vector<int> meld = state.utils_.int_to_meld.at(meld_id);
+//         for (int card : meld) {
+//           absl::StrAppend(&rv, state.utils_.CardString(card));
+//         }
+//       }
+//     }
+//     if (iig_obs_type_.private_info == PrivateInfoType::kAllPlayers ||
+//         (iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer &&
+//         player == 0)) {
+//       absl::StrAppend(&rv, "\n", state.utils_.HandToString(state.hands_[0]));
+//     } else {
+//       absl::StrAppend(&rv, "\n", state.utils_.HandToString(std::vector<int>()));
+//     }
+
+//     absl::StrAppend(&rv, "\nStock size: ", state.stock_size_);
+//     absl::StrAppend(&rv, "  Upcard: ", state.utils_.CardString(state.upcard_));
+//     absl::StrAppend(&rv, "\nDiscard pile: ");
+//     for (int card : state.discard_pile_) {
+//       absl::StrAppend(&rv, state.utils_.CardString(card));
+//     }
+//     if (iig_obs_type_.private_info == PrivateInfoType::kAllPlayers ||
+//         (iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer &&
+//         player == 1)) {
+//       absl::StrAppend(&rv, "\n\nPlayer1: Deadwood=", state.deadwood_[1]);
+//     } else {
+//       absl::StrAppend(&rv, "\n\nPlayer1:");
+//     }
+//     if (state.knocked_[0] && !state.layoffs_.empty()) {
+//       absl::StrAppend(&rv, "\nLayoffs: ");
+//       for (int card : state.layoffs_) {
+//         absl::StrAppend(&rv, state.utils_.CardString(card));
+//       }
+//     }
+//     if (!state.layed_melds_[1].empty()) {
+//       absl::StrAppend(&rv, "\nLayed melds:");
+//       for (int meld_id : state.layed_melds_[1]) {
+//         absl::StrAppend(&rv, " ");
+//         std::vector<int> meld = state.utils_.int_to_meld.at(meld_id);
+//         for (int card : meld) {
+//           absl::StrAppend(&rv, state.utils_.CardString(card));
+//         }
+//       }
+//     }
+
+//     if (iig_obs_type_.private_info == PrivateInfoType::kAllPlayers ||
+//         (iig_obs_type_.private_info == PrivateInfoType::kSinglePlayer &&
+//         player == 1)) {
+//       absl::StrAppend(&rv, "\n", state.utils_.HandToString(state.hands_[1]));
+//     } else {
+//       absl::StrAppend(&rv, "\n", state.utils_.HandToString(std::vector<int>()));
+//     }
+//     return rv;
+//   }
+
+//  private:
+//   static void WriteObservingPlayer(const GITCGState& state, int player,
+//                                    Allocator* allocator) {
+//     auto out = allocator->Get("player", {kNumPlayers});
+//     out.at(player) = 1;
+//   }
+
+//   static void WriteSinglePlayerHand(const GITCGState& state, int player,
+//                                     Allocator* allocator) {
+//     auto out = allocator->Get("private_hand", {kNumPlayers, kDefaultNumCards});
+//     for (auto card : state.hands_[player]) out.at(player, card) = 1;
+//   }
+
+//   static void WriteAllPlayerHands(const GITCGState& state,
+//                                   Allocator* allocator) {
+//     auto out = allocator->Get("private_hands", {kNumPlayers, kDefaultNumCards});
+//     for (Player p = 0; p < kNumPlayers; ++p) {
+//       for (auto card : state.hands_[p]) out.at(p, card) = 1;
+//     }
+//   }
+
+//   static void WriteCurrentPlayer(const GITCGState& state,
+//                                  Allocator* allocator) {
+//     auto out = allocator->Get("current_player", {kNumPlayers});
+//     if (state.cur_player_ >= 0) out.at(state.cur_player_) = 1;
+//   }
+
+//   static void WriteKnockCard(const GITCGState& state,
+//                              Allocator* allocator) {
+//     auto out = allocator->Get("knock_card", {kDefaultKnockCard});
+//     for (int i = 0; i < state.knock_card_; ++i) out.at(i) = 1;
+//   }
+
+//   static void WriteUpcard(const GITCGState& state, Allocator* allocator) {
+//     auto out = allocator->Get("upcard", {kDefaultNumCards});
+//     if (state.upcard_.has_value()) out.at(state.upcard_.value()) = 1;
+//   }
+
+//   static void WriteDiscardPile(const GITCGState& state,
+//                                Allocator* allocator) {
+//     auto out = allocator->Get("discard_pile", {kDefaultNumCards});
+//     for (auto card : state.discard_pile_) out.at(card) = 1;
+//   }
+
+//   static void WriteStockSize(const GITCGState& state,
+//                              Allocator* allocator) {
+//     auto out = allocator->Get("stock_size", {kDefaultNumCards});
+//     for (int i = 0; i < state.stock_size_; ++i) out.at(i) = 1;
+//   }
+
+//   static void WriteLayedMelds(const GITCGState& state,
+//                               Allocator* allocator) {
+//     auto out = allocator->Get("layed_melds", {kNumPlayers, kNumMeldActions});
+//     for (Player p = 0; p < kNumPlayers; ++p) {
+//       for (auto meld : state.layed_melds_[p]) out.at(p, meld) = 1;
+//     }
+//   }
+
+//   IIGObservationType iig_obs_type_;
+// };
+
+
 GITCGGame::GITCGGame(const GameParameters& params)
     : Game(kGameType, params) {}
 
