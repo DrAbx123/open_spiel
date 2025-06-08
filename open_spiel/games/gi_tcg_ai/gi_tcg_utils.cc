@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "open_spiel/games/gi_tcg/gi_tcg_utils.h"
-#include "open_spiel/games/gi_tcg/gi_tcg.h" // For GITCGGame, GITCGState potentially
+#include "open_spiel/games/gi_tcg_ai/gi_tcg_utils.h"
+#include "open_spiel/games/gi_tcg_ai/gi_tcg.h" // For GITCGGame, GITCGState potentially
 
 #include "open_spiel/abseil-cpp/absl/strings/str_cat.h"
 #include "open_spiel/spiel_utils.h" // For SpielLog, SpielFatalError

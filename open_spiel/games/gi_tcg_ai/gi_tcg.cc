@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "open_spiel/games/gi_tcg/gi_tcg.h"
+#include "open_spiel/games/gi_tcg_ai/gi_tcg.h"
 
 #include <algorithm> // For std::min, std::max
 #include <memory>      // For std::shared_ptr, std::unique_ptr
