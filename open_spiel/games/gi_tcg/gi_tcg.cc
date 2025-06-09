@@ -21,6 +21,7 @@
 #include "open_spiel/abseil-cpp/absl/strings/str_cat.h"
 #include "open_spiel/abseil-cpp/absl/strings/str_format.h"
 #include "open_spiel/games/gi_tcg/gi_tcg_utils.h"
+#include "open_spiel/games/gi_tcg/include/gitcg/gitcg.h"
 
 namespace open_spiel {
 namespace gi_tcg {
@@ -255,12 +256,15 @@ RegisterSingleTensorObserver single_tensor(kGameType.short_name);
 // };
 
 
-GITCGGame::GITCGGame(const GameParameters& params)
-    : Game(kGameType, params) {}
+GITCGGame::GITCGGame(const GameParameters& params) : Game(kGameType, params) {
+  gitcg_initialize();
+}
 
-GITCGState::GITCGState(std::shared_ptr<const Game> game) : State(game) {
+GITCGState::GITCGState(std::shared_ptr<const Game> game, gitcg_state_createparam_t createparam) : State(game) {
+  gitcg_thread_initialize();
   absl::c_fill(dealer_deck_, 1);
 }
+
 
 std::string GITCGState::ActionToString(Player player, Action action) const {
   if (player == kChancePlayerId) {

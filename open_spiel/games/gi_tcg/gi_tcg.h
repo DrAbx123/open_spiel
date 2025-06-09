@@ -66,10 +66,12 @@
 // And if (1) both peasants do not play any cards
 // (2) dizhu does not play any cards after its first hand, then it's called
 // spring. And the stake is also doubled.
+#include <mutex>
 
 #include "open_spiel/abseil-cpp/absl/types/optional.h"
 #include "open_spiel/games/gi_tcg/gi_tcg_utils.h"
 #include "open_spiel/spiel.h"
+
 
 namespace open_spiel {
 namespace gi_tcg {
@@ -95,7 +97,7 @@ class Trick {
 
 class GITCGState : public State {
  public:
-  GITCGState(std::shared_ptr<const Game> game);
+  GITCGState(std::shared_ptr<const Game> game, gitcg_state_createparam_t createparam);
   Player CurrentPlayer() const override;
   std::string ActionToString(Player player, Action action) const override;
   std::string ToString() const override;
